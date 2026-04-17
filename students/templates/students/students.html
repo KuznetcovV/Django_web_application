@@ -5,6 +5,15 @@
 
 <h1>Ученики</h1>
 
-<p>Здесь будут выводиться ученики</p>
-
+<p>Список всех учеников</p>
+    {% if students %}
+        {% for student in students %}
+            <div class="alert alert-warning mt-2">
+                <h3>{{student.name}} - {{student.number_of_class}} класс.</h3>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Список учеников пуст</p>
+    {% endif %}
+    <a class="text-black" href="{% url 'add_student' %}">Добавить ученика</a>
 {% endblock %}

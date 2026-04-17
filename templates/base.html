@@ -9,10 +9,10 @@
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">My Project</a>
+            <a class="navbar-brand" href="{% url 'home_tab' %}">My Project</a>
             <div>
-                <a class="text-white me-3" href="/students/">Ученики</a>
-                <a class="text-white" href="/schedule/">Расписание</a>
+                <a class="text-white me-3" href="{% url 'students' %}">Ученики</a>
+                <a class="text-white" href="{% url 'schedule' %}">Расписание</a>
             </div>
         </div>
     </nav>

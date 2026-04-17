@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.schedule_tab)
+    path('', views.schedule_tab, name='schedule')
 ]
