@@ -6,8 +6,18 @@
     <form method="post">
         {% csrf_token %}
 
-        {{form.name}}<br>
-        {{form.number_of_class}} <br>
+
+        <div class="mb-3">
+            {{form.name.label_tag}}
+            {{form.name}}
+            {{form.name.errors}}
+        </div>
+
+        <div class="mb-3">
+            {{form.number_of_class.label_tag }}
+            {{form.number_of_class}}
+            {{form.number_of_class.errors}}
+        </div>
 
         <div>
             <button type="submit" class="btn btn-success">Добавить</button>

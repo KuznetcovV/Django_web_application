@@ -8,12 +8,24 @@
 <p>Список всех учеников</p>
     {% if students %}
         {% for student in students %}
-            <div class="alert alert-warning mt-2">
-                <h3>{{student.name}} - {{student.number_of_class}} класс.</h3>
+            <div class="card mt-2 p-3 shadow-sm">
+                <h5>{{student.name}}</h5>
+                <p class="text-muted">{{student.number_of_class}}</p>
+                <a href="{% url 'edit_student' student.id %}" class="btn btn-warning btn-sm">Изменить</a>
+                
+                <form action="{% url 'delete_student' student.id %}" method="post", style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить ученика?')">
+                        Удалить
+                    </button>
+                </form>
+
             </div>
         {% endfor %}
     {% else %}
         <p>Список учеников пуст</p>
     {% endif %}
-    <a class="text-black" href="{% url 'add_student' %}">Добавить ученика</a>
+    <a class="btn btn-primary mt-3" href="{% url 'add_student' %}">
+        Добавить ученика
+    </a>
 {% endblock %}
