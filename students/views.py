@@ -3,7 +3,6 @@ from .models import Student
 from .forms import StudentForm
 
 
-# Create your views here.
 def students_tab(request):
     students = Student.objects.order_by('name')
     context = {

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+
+                <h3 class="mb-4 text-center">➕ Добавление занятия</h3>
+
+                <form method="post" autocomplete="off">
+                    {% csrf_token %}
+
+                    <!-- Ученик -->
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.student.label }}</label>
+                        {{ form.student }}
+                        <div class="text-danger small">
+                            {{ form.student.errors }}
+                        </div>
+                    </div>
+
+                    <!-- День -->
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.day.label }}</label>
+                        {{ form.day }}
+                        <div class="text-danger small">
+                            {{ form.day.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Время начала -->
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.time_start.label }}</label>
+                        {{ form.time_start }}
+                        <div class="text-danger small">
+                            {{ form.time_start.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Время конца -->
+                    <div class="mb-4">
+                        <label class="form-label">{{ form.time_end.label }}</label>
+                        {{ form.time_end }}
+                        <div class="text-danger small">
+                            {{ form.time_end.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Кнопки -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'schedule' %}" class="btn btn-outline-secondary">
+                            Назад
+                        </a>
+
+                        <button type="submit" class="btn btn-success">
+                            Сохранить
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
