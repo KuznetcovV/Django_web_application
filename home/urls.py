@@ -6,4 +6,6 @@ urlpatterns = [
     path('', views.home_tab, name='home_tab'),
     path('students/', include('students.urls')),
     path('lessons/', include('lessons.urls')),
+    path('login/', views.login_tab, name='login'),
+    path('logout/', views.logout_tab, name='logout'),
 ]

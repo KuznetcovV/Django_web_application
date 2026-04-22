@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Student
 from lessons.models import Lesson
 from .forms import StudentForm
 
 
+@login_required
 def students_tab(request):
     students = Student.objects.order_by('name')
     context = {
@@ -12,6 +14,7 @@ def students_tab(request):
     return render(request, 'students/students.html', context)
 
 
+@login_required
 def add_student(request):
     if request.method == 'POST':
         form = StudentForm(request.POST)
@@ -29,6 +32,7 @@ def add_student(request):
     return render(request, 'students/add_student.html', context)
 
 
+@login_required
 def edit_student(request, student_id):
     student = get_object_or_404(Student, id=student_id)
 
@@ -45,6 +49,7 @@ def edit_student(request, student_id):
     return render(request, 'students/edit_student.html', context)
 
 
+@login_required
 def delete_student(request, student_id):
     student = get_object_or_404(Student, id=student_id)
 
@@ -54,6 +59,7 @@ def delete_student(request, student_id):
     return redirect('students')
 
 
+@login_required
 def student_info(request, student_id):
     lessons = Lesson.objects.filter(student=student_id)
     student = get_object_or_404(Student, id=student_id)
