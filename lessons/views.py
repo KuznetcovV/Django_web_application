@@ -3,12 +3,12 @@ from .models import Lesson
 from .forms import LessonForm
 
 
-def schedule_tab(request):
+def lessons_tab(request):
     lessons = Lesson.objects.order_by('student')
     context = {
         'lessons': lessons
     }
-    return render(request, 'schedule/schedule.html', context)
+    return render(request, 'lessons/lessons.html', context)
 
 
 def add_lesson(request):
@@ -19,13 +19,13 @@ def add_lesson(request):
 
     if request.method == 'POST' and form.is_valid():
         form.save()
-        return redirect('schedule')
+        return redirect('lessons')
 
     context = {
         'form': form,
     }
 
-    return render(request, 'schedule/add_lesson.html', context)
+    return render(request, 'lessons/add_lesson.html', context)
 
 
 def edit_lesson(request, lesson_id):
@@ -35,13 +35,13 @@ def edit_lesson(request, lesson_id):
         form = LessonForm(request.POST, instance=lesson)
         if form.is_valid():
             form.save()
-            return redirect('schedule')
+            return redirect('lessons')
     else:
         form = LessonForm(instance=lesson)
 
     context = {'form': form}
 
-    return render(request, 'schedule/edit_lesson.html', context)
+    return render(request, 'lessons/edit_lesson.html', context)
 
 
 def delete_lesson(request, lesson_id):
@@ -50,4 +50,4 @@ def delete_lesson(request, lesson_id):
     if request.method == 'POST':
         lesson.delete()
 
-    return redirect('schedule')
+    return redirect('lessons')
