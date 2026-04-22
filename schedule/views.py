@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Lesson
 from .forms import LessonForm
 
@@ -26,3 +26,28 @@ def add_lesson(request):
     }
 
     return render(request, 'schedule/add_lesson.html', context)
+
+
+def edit_lesson(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+
+    if request.method == 'POST':
+        form = LessonForm(request.POST, instance=lesson)
+        if form.is_valid():
+            form.save()
+            return redirect('schedule')
+    else:
+        form = LessonForm(instance=lesson)
+
+    context = {'form': form}
+
+    return render(request, 'schedule/edit_lesson.html', context)
+
+
+def delete_lesson(request, lesson_id):
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+
+    if request.method == 'POST':
+        lesson.delete()
+
+    return redirect('schedule')
