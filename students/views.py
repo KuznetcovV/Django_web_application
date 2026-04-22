@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Student
+from lessons.models import Lesson
 from .forms import StudentForm
 
 
@@ -51,3 +52,11 @@ def delete_student(request, student_id):
         student.delete()
 
     return redirect('students')
+
+
+def student_info(request, student_id):
+    lessons = Lesson.objects.filter(student=student_id)
+    student = get_object_or_404(Student, id=student_id)
+    context = {'lessons': lessons,
+               'student': student}
+    return render(request, 'students/student_info.html', context)
