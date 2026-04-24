@@ -56,3 +56,17 @@ def delete_lesson(request, lesson_id):
         lesson.delete()
 
     return redirect('lessons')
+
+
+@login_required
+def schedule_tab(request):
+    schedule = {i: [] for i in range(1, 8)}
+
+    lessons = Lesson.objects.all()
+
+    for lesson in lessons:
+        schedule[lesson.day].append(lesson)
+
+    context = {'schedule': schedule}
+
+    return render(request, 'lessons/schedule.html', context)

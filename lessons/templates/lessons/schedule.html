@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="mb-4">Расписание</h1>
+
+<div class="row g-3">
+
+    {% for day, lessons in schedule.items %}
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+
+                    <!-- Название дня -->
+                    <h5 class="card-title text-center mb-3">
+                        {% if day == 1 %}Понедельник{% endif %}
+                        {% if day == 2 %}Вторник{% endif %}
+                        {% if day == 3 %}Среда{% endif %}
+                        {% if day == 4 %}Четверг{% endif %}
+                        {% if day == 5 %}Пятница{% endif %}
+                        {% if day == 6 %}Суббота{% endif %}
+                        {% if day == 7 %}Воскресенье{% endif %}
+                    </h5>
+
+                    <!-- Уроки -->
+                    {% if lessons %}
+                        {% for lesson in lessons %}
+                            <div class="mb-2 p-2 bg-light rounded border">
+
+                                <div class="fw-bold">
+                                    {{ lesson.time_start|time:"H:i" }} — {{ lesson.time_end|time:"H:i" }}
+                                </div>
+
+                                <div class="text-muted small">
+                                    {{ lesson.student.name }}
+                                </div>
+
+                                <div class="text-secondary small">
+                                    {{ lesson.student.get_number_of_class_display }}
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center">
+                            Нет занятий
+                        </p>
+                    {% endif %}
+
+                </div>
+            </div>
+
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
