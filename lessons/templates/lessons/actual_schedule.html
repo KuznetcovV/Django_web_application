@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Расписание</h1>
+
+{% for day in schedule %}
+    <div class="card mb-3 p-3">
+        <h4>{{ day.date }}</h4>
+
+        {% if day.lessons %}
+            {% for lesson in day.lessons %}
+                <div class="mb-2">
+                    {{ lesson.student.name }}
+                    ({{ lesson.time_start }} - {{ lesson.time_end }})
+
+                    <form method="post" action="{% url 'cancel_lesson' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="lesson_id" value="{{ lesson.id }}">
+                        <input type="hidden" name="date" value="{{ day.date|date:'Y-m-d' }}">
+                        <button type="submit">Отменить</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Нет занятий</p>
+        {% endif %}
+    </div>
+{% endfor %}
+
+
+{% endblock %}

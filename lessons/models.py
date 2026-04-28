@@ -25,3 +25,11 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f'{self.student} - {self.get_day_display()}: {self.time_start}-{self.time_end}'
+
+
+class CancelledLesson(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    date = models.DateField()
+
+    class Meta:
+        unique_together = ('lesson', 'date')
