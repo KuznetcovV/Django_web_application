@@ -33,3 +33,23 @@ class CancelledLesson(models.Model):
 
     class Meta:
         unique_together = ('lesson', 'date')
+
+    def __str__(self):
+        return f'{self.lesson} - {self.date}'
+
+
+class TransferredLesson(models.Model):
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    old_date = models.DateField()
+    new_date = models.DateField()
+
+    new_time_start = models.TimeField(null=True, blank=True)
+    new_time_end = models.TimeField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('lesson', 'old_date')
+    
+    def __str__(self):
+        return f'{self.lesson}: {self.old_date} - {self.new_date}'
