@@ -23,7 +23,13 @@
                     <div class="d-flex align-items-center justify-content-between border-bottom py-2">
 
                         <div>
-                            <strong>{{ lesson.student.name }}</strong>
+                            <strong>
+                                {{ lesson.lesson.student.name }}
+
+                                {% if lesson.is_transfered %}
+                                    <span class="badge bg-warning text-dark ms-2">перенос</span>
+                                {% endif %}
+                            </strong>
 
                             <small class="text-muted">
                                 {{ lesson.time_start }} – {{ lesson.time_end }}
@@ -34,7 +40,7 @@
 
                             <form method="post" action="{% url 'cancel_lesson' %}">
                                 {% csrf_token %}
-                                <input type="hidden" name="lesson_id" value="{{ lesson.id }}">
+                                <input type="hidden" name="lesson_id" value="{{ lesson.lesson.id }}">
                                 <input type="hidden" name="date" value="{{ day.date|date:'Y-m-d' }}">
                                 <button type="submit" class="btn btn-sm btn-danger">
                                     Отмена
@@ -43,7 +49,16 @@
 
                             <form method="post" action="{% url 'transfer_lesson' %}" class="d-flex gap-2">
                                 {% csrf_token %}
-                                <input type="hidden" name="lesson_id" value="{{ lesson.id }}">
+                                <input type="hidden" name="lesson_id" value="{{ lesson.lesson.id }}">
+                                <select name="new_time" class="form-select form-select-sm" required>
+                                    {% for slot in day.slots %}
+                                        <option value="{{ slot.start_time|time:'H:i' }}"
+                                                {% if slot.busy %}disabled{% endif %}>
+                                            {{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}
+                                            {% if slot.busy %}(занято){% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
                                 <input type="hidden" name="old_date" value="{{ day.date|date:'Y-m-d' }}">
 
                                 <input type="date" name="new_date" class="form-control form-control-sm" required>
