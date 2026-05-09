@@ -60,8 +60,17 @@
     </div>
 {% endif %}
 
-<a href="#" class="btn btn-primary mt-3">
-    + Добавить занятие
-</a>
+<div class="d-flex gap-2 mt-3">
+
+    <a href="#" class="btn btn-primary">
+        + Добавить занятие
+    </a>
+
+    <a href="{% url 'create_subscription' student.id %}"
+       class="btn btn-success">
+        + Создать абонемент
+    </a>
+
+</div>
 
 {% endblock %}
