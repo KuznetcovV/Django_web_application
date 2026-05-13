@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Lesson, CancelledLesson, TransferredLesson
-from .forms import LessonForm
+from .models import Lesson, CancelledLesson, TransferredLesson, Student
+from .forms import LessonForm, LessonForStudentForm
 from datetime import date, timedelta, datetime, time
 from django.views.decorators.http import require_POST
 
@@ -24,6 +24,27 @@ def lessons_tab(request):
     }
     return render(request, 'lessons/lessons.html', context)
 
+
+@login_required
+def create_lesson_for_student(request, student_id):
+
+    student = get_object_or_404(Student, id=student_id)
+    if request.method == 'POST':
+        form = LessonForStudentForm(request.POST)
+    else:
+        form = LessonForStudentForm()
+
+    if request.method == 'POST' and form.is_valid():
+        form.instance.student = student
+        form.save()
+        return redirect('student_info', student_id=student_id)
+    
+    context = {
+        'form': form,
+        'student': student
+    }
+
+    return render(request, 'lessons/add_lesson_for_student.html', context)
 
 @login_required
 def add_lesson(request):

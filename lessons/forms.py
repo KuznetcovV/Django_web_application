@@ -24,3 +24,22 @@ class LessonForm(ModelForm):
                 'type': 'time',
                 'placeholder': 'Выберите время конца занятия'}),
         }
+
+
+class LessonForStudentForm(ModelForm):
+    class Meta:
+        model = Lesson
+        exclude = ['student']
+        widgets = {
+            'day': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Выберите день недели'}),
+            'time_start': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time',
+                'placeholder': 'Выберите время начала занятия'}),
+            'time_end': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time',
+                'placeholder': 'Выберите время конца занятия'}),
+        }
