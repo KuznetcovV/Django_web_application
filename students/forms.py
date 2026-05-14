@@ -1,13 +1,21 @@
 from .models import Student, Subscription
 from django.forms import ModelForm
+from django.core.exceptions import ValidationError
 from django import forms
+from .validators import validate_student_name, validate_subscription_price, validate_lesson_overlap
+
 
 
 class StudentForm(ModelForm):
     number_of_class = forms.ChoiceField(
         label='Класс ученика',
         choices=[('', 'Выберите класс')] + Student.CLASS_CHOICES
-        )
+        )    
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        validate_student_name(name)
+        return name
 
     class Meta:
         model = Student
@@ -21,6 +29,7 @@ class StudentForm(ModelForm):
                 'class': 'form-control',
                 }),
         }
+
 
 
 class SubscriptionForm(ModelForm):
@@ -46,3 +55,16 @@ class SubscriptionForm(ModelForm):
                 'class': 'form-check-input',
                 }),
         }
+    
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+        validate_subscription_price(price)
+        return price
+
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+        validate_lesson_overlap(start_date, end_date)
+        return cleaned_data

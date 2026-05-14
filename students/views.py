@@ -28,8 +28,6 @@ def create_subscription(requset, student_id):
         form.save()
         return redirect('student_info', student_id=student_id)
     
-    print(form.errors)
-    
     context = {
         'form': form,
         'student': student

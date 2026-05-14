@@ -1,6 +1,7 @@
 from .models import Lesson
 from django.forms import ModelForm
 from django import forms
+from .validators import validate_lesson_overlap, validate_start_less_end
 
 
 class LessonForm(ModelForm):
@@ -25,6 +26,22 @@ class LessonForm(ModelForm):
                 'placeholder': 'Выберите время конца занятия'}),
         }
 
+    def clean(self):
+
+        cleaned_data = super().clean()
+        weekday = cleaned_data.get('day')
+        time_start = cleaned_data.get('time_start')
+        time_end = cleaned_data.get('time_end')
+
+        if not (weekday and time_start and time_end):
+            return cleaned_data
+        validate_start_less_end(time_start, time_end)
+        validate_lesson_overlap(weekday,
+                                time_start,
+                                time_end,
+                                self.instance.id)
+        return cleaned_data
+
 
 class LessonForStudentForm(ModelForm):
     class Meta:
@@ -43,3 +60,13 @@ class LessonForStudentForm(ModelForm):
                 'type': 'time',
                 'placeholder': 'Выберите время конца занятия'}),
         }
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        weekday = cleaned_data.get('day')
+        time_start = cleaned_data.get('time_start')
+        time_end = cleaned_data.get('time_end')
+        validate_lesson_overlap(weekday,
+                                time_start,
+                                time_end)
+        return cleaned_data
