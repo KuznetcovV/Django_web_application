@@ -53,15 +53,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': config('DB_NAME'),
         'USER': config('USER_NAME'),
         'PASSWORD': config('PASSWORD'),
-        'DB_HOST': config('DB_HOST'),
-        'DB_PORT': config('DB_PORT')
+        'HOST': config('DB_HOST'),
+        
+        'PORT': config('DB_PORT')
     }
 }
 

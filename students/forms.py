@@ -1,8 +1,7 @@
 from .models import Student, Subscription
 from django.forms import ModelForm
-from django.core.exceptions import ValidationError
 from django import forms
-from .validators import validate_student_name, validate_subscription_price, validate_lesson_overlap
+from .validators import validate_student_name, validate_subscription_price, validate_subscription_dates
 
 
 
@@ -14,7 +13,12 @@ class StudentForm(ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
-        validate_student_name(name)
+
+        validate_student_name(
+            name,
+            self.instance.id
+        )
+
         return name
 
     class Meta:
@@ -66,5 +70,5 @@ class SubscriptionForm(ModelForm):
         cleaned_data = super().clean()
         start_date = cleaned_data.get('start_date')
         end_date = cleaned_data.get('end_date')
-        validate_lesson_overlap(start_date, end_date)
+        validate_subscription_dates(start_date, end_date)
         return cleaned_data
