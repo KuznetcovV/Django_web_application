@@ -24,11 +24,19 @@
 
                         <div>
                             <strong>
-                                {{ lesson.lesson.student.name }}
+                                <a
+                                    href="{% url 'create_lesson_log' lesson.lesson.id day.date|date:'Y-m-d' %}"
+                                    class="text-decoration-none text-dark"
+                                >
+                                    {{ lesson.lesson.student.name }}
+                                </a>
 
                                 {% if lesson.is_transfered %}
-                                    <span class="badge bg-warning text-dark ms-2">перенос</span>
+                                    <span class="badge bg-warning text-dark ms-2">
+                                        перенос
+                                    </span>
                                 {% endif %}
+
                             </strong>
 
                             <small class="text-muted">

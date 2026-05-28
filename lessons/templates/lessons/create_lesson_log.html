@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h2 class="mb-1">
+                Запись занятия для {{ lesson.student.name }}
+            </h2>
+
+            <p class="text-muted mb-4">
+                 Дата: {{today}}
+            </p>
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Тема занятия
+                        </label>
+
+                        {{ form.topic }}
+
+                        {{ form.topic.errors }}
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Учебник
+                        </label>
+
+                        {{ form.textbook }}
+
+                        {{ form.textbook.errors }}
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Решенные задания
+                    </label>
+
+                    {{ form.solved_tasks }}
+
+                    {{ form.solved_tasks.errors }}
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Комментарий
+                    </label>
+
+                    {{ form.comment }}
+
+                    {{ form.comment.errors }}
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-2 mb-3">
+
+                        <label class="form-label">
+                            Оценка
+                        </label>
+
+                        {{ form.grade }}
+
+                        {{ form.grade.errors }}
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Сохранить
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.querySelector('form').addEventListener('keydown', function(event) {
+
+    if (
+        event.key === 'Enter' &&
+        event.target.tagName !== 'TEXTAREA'
+    ) {
+
+        event.preventDefault();
+
+    }
+
+});
+
+</script>
+
+
+
+{% endblock %}

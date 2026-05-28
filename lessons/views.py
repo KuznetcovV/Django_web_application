@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Lesson, CancelledLesson, TransferredLesson, Student
-from .forms import LessonForm, LessonForStudentForm
+from .forms import LessonForm, LessonForStudentForm, LessonLogForm
 from datetime import date, timedelta, datetime, time
 from django.views.decorators.http import require_POST
 
@@ -268,3 +268,36 @@ def transfer_lesson(request):
         )
 
     return redirect('actual_schedule')
+
+
+def create_lesson_log(request, lesson_id, lesson_date):
+
+    lesson = get_object_or_404(Lesson, id=lesson_id)
+    parsed_date = datetime.strptime(
+        lesson_date,
+        '%Y-%m-%d'
+        ).date()
+
+    if request.method == 'POST':
+
+        form = LessonLogForm(request.POST)
+
+        if form.is_valid():
+            lesson_log = form.save(commit=False)
+            lesson_log.student = lesson.student
+            lesson_log.lesson = lesson
+            lesson_log.date = parsed_date
+
+            lesson_log.save()
+            return redirect('actual_schedule')
+    
+    else:
+        form = LessonLogForm()
+
+    context = {
+        'form': form,
+        'lesson': lesson,
+        'today': parsed_date
+    }
+
+    return render(request, 'lessons/create_lesson_log.html', context)

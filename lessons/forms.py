@@ -1,4 +1,4 @@
-from .models import Lesson
+from .models import Lesson, LessonLog
 from django.forms import ModelForm
 from django import forms
 from .validators import validate_lesson_overlap, validate_start_less_end
@@ -70,3 +70,34 @@ class LessonForStudentForm(ModelForm):
                                 time_start,
                                 time_end)
         return cleaned_data
+    
+
+class LessonLogForm(ModelForm):
+    class Meta:
+        model = LessonLog
+        exclude = ['student', 'lesson', 'date']
+        widgets = {
+            'topic': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Тема занятия'
+            }),
+            'textbook': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Учебник'
+            }),
+            'solved_tasks': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Решеные задания',
+                'rows': 3
+            }),
+            'grade': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Оценка',
+                'min': 1,
+                'max': 5
+            }),
+            'comment': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Комментарий о занятии'
+            })
+        }

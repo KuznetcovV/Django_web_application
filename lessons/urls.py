@@ -10,5 +10,11 @@ urlpatterns = [
     path('base_schedule/', views.base_schedule_tab, name='base_schedule'),
     path('actual_shedule/', views.actual_schedule_view, name='actual_schedule'),
     path('cancel/', views.cancel_lesson, name='cancel_lesson'),
-    path('transfer/', views.transfer_lesson, name='transfer_lesson')
+    path('transfer/', views.transfer_lesson, name='transfer_lesson'),
+    path(
+        '<int:lesson_id>/logs/create/<str:lesson_date>/',
+        views.create_lesson_log,
+        name='create_lesson_log'
+        )
+
 ]

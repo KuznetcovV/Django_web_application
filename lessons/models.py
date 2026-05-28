@@ -53,3 +53,45 @@ class TransferredLesson(models.Model):
     
     def __str__(self):
         return f'{self.lesson}: {self.old_date} - {self.new_date}'
+    
+
+class LessonLog(models.Model):
+    student = models.ForeignKey(Student, 
+                                on_delete=models.CASCADE,
+                                related_name='lesson_logs')
+    
+    lesson = models.ForeignKey(Lesson, 
+                               on_delete=models.SET_NULL,
+                               null=True,
+                               blank=True)
+    
+    date = models.DateField()
+    topic = models.CharField(
+        max_length=255,
+        blank=True
+    )
+
+    textbook = models.CharField(
+        max_length=255,
+        blank=True
+    )
+
+    solved_tasks = models.TextField(
+        blank=True
+    )
+
+    grade = models.IntegerField(
+        blank=True,
+        null=True
+    )
+
+    comment = models.TextField(
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.student} {self.date}'
