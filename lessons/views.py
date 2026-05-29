@@ -16,14 +16,6 @@ WEEKDAYS = {
     6: 'Воскресенье',
 }
 
-@login_required
-def lessons_tab(request):
-    lessons = Lesson.objects.order_by('student')
-    context = {
-        'lessons': lessons
-    }
-    return render(request, 'lessons/lessons.html', context)
-
 
 @login_required
 def create_lesson_for_student(request, student_id):
@@ -45,23 +37,6 @@ def create_lesson_for_student(request, student_id):
     }
 
     return render(request, 'lessons/add_lesson_for_student.html', context)
-
-@login_required
-def add_lesson(request):
-    if request.method == 'POST':
-        form = LessonForm(request.POST)
-    else:
-        form = LessonForm()
-
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        return redirect('lessons')
-
-    context = {
-        'form': form,
-    }
-
-    return render(request, 'lessons/add_lesson.html', context)
 
 
 @login_required

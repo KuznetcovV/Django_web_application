@@ -22,7 +22,7 @@ class Subscription(models.Model):
         verbose_name = 'Абонемент'
         verbose_name_plural = 'Абонементы'
     
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='subscriptions')
 
     start_date = models.DateField()
     end_date = models.DateField()

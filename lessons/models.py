@@ -18,7 +18,7 @@ class Lesson(models.Model):
         (7, 'Воскресенье'),
     ]
 
-    student = models.ForeignKey(Student, verbose_name='Ученик', on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, verbose_name='Ученик', on_delete=models.CASCADE, related_name='lessons')
     day = models.IntegerField(verbose_name='День недели', choices=DAYS_OF_WEEK)
     time_start = models.TimeField(verbose_name='Время начала')
     time_end = models.TimeField(verbose_name='Время конца занятия')
@@ -28,7 +28,7 @@ class Lesson(models.Model):
 
 
 class CancelledLesson(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='cancelled_lessons')
     date = models.DateField()
 
     class Meta:
@@ -39,7 +39,7 @@ class CancelledLesson(models.Model):
 
 
 class TransferredLesson(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='transfered_lessons')
     old_date = models.DateField()
     new_date = models.DateField()
 

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="mb-1">
+            История занятий
+        </h2>
+
+        <p class="text-muted mb-0">
+            {{ student.name }}
+        </p>
+
+    </div>
+
+    <a href="{% url 'student_info' student.id %}"
+       class="btn btn-outline-secondary">
+
+        ← Назад
+
+    </a>
+
+</div>
+
+{% if lesson_logs %}
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>Дата</th>
+                            <th>Тема</th>
+                            <th>Учебник</th>
+                            <th>Оценка</th>
+                            <th>Комментарий</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for log in lesson_logs %}
+
+                            <tr>
+
+                                <td>
+                                    {{ log.date }}
+                                </td>
+
+                                <td>
+                                    {{ log.topic|default:"—" }}
+                                </td>
+
+                                <td>
+                                    {{ log.textbook|default:"—" }}
+                                </td>
+
+                                <td>
+
+                                    {% if log.grade %}
+
+                                        <span class="badge bg-success">
+                                            {{ log.grade }}
+                                        </span>
+
+                                    {% else %}
+
+                                        —
+                                    
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+                                    {{ log.comment|default:"—" }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% else %}
+
+    <div class="alert alert-info">
+
+        У ученика пока нет записей о занятиях
+
+    </div>
+
+{% endif %}
+
+{% endblock %}

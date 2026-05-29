@@ -14,6 +14,7 @@ def students_tab(request):
     }
     return render(request, 'students/students.html', context)
 
+
 def create_subscription(requset, student_id):
 
     student = get_object_or_404(Student, id=student_id)
@@ -34,6 +35,7 @@ def create_subscription(requset, student_id):
     }
 
     return render(requset, 'students/create_subscription.html', context)
+
 
 @login_required
 def add_student(request):
@@ -80,12 +82,32 @@ def delete_student(request, student_id):
     return redirect('students')
 
 
+
 @login_required
 def student_info(request, student_id):
-    lessons = Lesson.objects.filter(student=student_id)
-    student = get_object_or_404(Student, id=student_id)
-    context = {'lessons': lessons,
-               'student': student}
+
+    student = get_object_or_404(
+        Student.objects.prefetch_related(
+            'lessons',
+            'subscriptions',
+            'lesson_logs'
+        ),
+        id=student_id
+    )
+
+    lessons = student.lessons.all()
+
+    subscriptions = student.subscriptions.all()
+
+    lesson_logs = student.lesson_logs.order_by('-date')
+
+    context = {
+        'student': student,
+        'lessons': lessons,
+        'subscriptions': subscriptions,
+        'lesson_logs': lesson_logs
+    }
+
     return render(request, 'students/student_info.html', context)
 
 
@@ -111,3 +133,41 @@ def count_price_sibscription(student_id):
     amount_of_lessons = count_lessons_for_student_in_period(start_date, end_date, student_id)
     return int(price_for_one_lesson * amount_of_lessons)
 
+
+def student_logs(request, student_id):
+    student = get_object_or_404(Student, id=student_id)
+
+    lesson_logs = student.lesson_logs.order_by('-date')
+
+    context = {
+        'student': student,
+        'lesson_logs': lesson_logs
+    }
+
+    return render(request, 'students/student_logs.html', context)
+
+
+def student_lessons(request, student_id):
+    student = get_object_or_404(Student, id=student_id)
+
+    lessons = student.lessons.order_by('day')
+
+    context = {
+        'student': student,
+        'lessons': lessons
+    }
+
+    return render(request, 'students/student_lessons.html', context)
+
+
+def student_subscriptions(request, student_id):
+    student = get_object_or_404(Student, id=student_id)
+
+    subscriptions = student.subscriptions.order_by('-end_date')
+
+    context = {
+        'student': student,
+        'subscriptions': subscriptions
+    }
+
+    return render(request, 'students/student_subscriptions.html', context)
