@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Student, Subscription
 from lessons.models import Lesson
 from .forms import StudentForm, SubscriptionForm
-from datetime import timedelta
+from datetime import timedelta, date
 
 
 @login_required
@@ -15,9 +15,24 @@ def students_tab(request):
     return render(request, 'students/students.html', context)
 
 
+def count_of_weekdays_between_dates(weekdays, start, end):
+    count = 0
+    current_date = start
+
+    while current_date <= end:
+        if current_date.weekday() + 1 in weekdays:
+            count += 1
+        
+        current_date += timedelta(days=1)
+    
+    return count
+
 def create_subscription(requset, student_id):
 
     student = get_object_or_404(Student, id=student_id)
+    lessons = student.lessons.all()
+    weekdays = set(lessons.values_list('day', flat=True))
+
     if requset.method == 'POST':
         form = SubscriptionForm(requset.POST)
     else:
@@ -25,8 +40,14 @@ def create_subscription(requset, student_id):
     
     
     if requset.method == 'POST' and form.is_valid():
-        form.instance.student = student
-        form.save()
+        subscription = form.save(commit=False)
+        subscription.student = student
+        subscription.planned_lessons = count_of_weekdays_between_dates(
+        weekdays,
+        subscription.start_date,
+        subscription.end_date
+    )
+        subscription.save()
         return redirect('student_info', student_id=student_id)
     
     context = {
@@ -36,6 +57,38 @@ def create_subscription(requset, student_id):
 
     return render(requset, 'students/create_subscription.html', context)
 
+
+def edit_subscription(request, subscription_id):
+    subscription = get_object_or_404(Subscription, id=subscription_id)
+    student_id = subscription.student.id
+    if request.method == 'POST':
+        form = SubscriptionForm(request.POST, instance=subscription)
+        if form.is_valid():
+            form.save()
+            return redirect(
+                'student_subscriptions',
+                student_id=student_id
+                )
+    else:
+        form = SubscriptionForm(instance=subscription)
+
+    context = {'form': form,
+               'subscription': subscription,
+               'student': subscription.student}
+
+    return render(request, 'students/edit_subscription.html', context)
+
+
+def delete_subscription(request, subscription_id):
+    subscription = get_object_or_404(Subscription, id=subscription_id)
+    student_id = subscription.student.id
+    if request.method == 'POST':
+        subscription.delete()
+    
+    return redirect(
+                'student_subscriptions',
+                student_id=student_id
+                )
 
 @login_required
 def add_student(request):
@@ -97,14 +150,14 @@ def student_info(request, student_id):
 
     lessons = student.lessons.all()
 
-    subscriptions = student.subscriptions.all()
+    subscription = student.subscriptions.order_by('-start_date').first()
 
     lesson_logs = student.lesson_logs.order_by('-date')
 
     context = {
         'student': student,
         'lessons': lessons,
-        'subscriptions': subscriptions,
+        'subscription': subscription,
         'lesson_logs': lesson_logs
     }
 
@@ -167,7 +220,7 @@ def student_subscriptions(request, student_id):
 
     context = {
         'student': student,
-        'subscriptions': subscriptions
+        'subscriptions': subscriptions,
     }
 
     return render(request, 'students/student_subscriptions.html', context)

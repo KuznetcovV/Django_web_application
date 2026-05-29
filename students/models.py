@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 
 class Student(models.Model):
@@ -32,3 +33,22 @@ class Subscription(models.Model):
     is_paid = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    planned_lessons = models.IntegerField(default=0)
+
+    @property
+    def is_active(self):
+        return self.start_date <= date.today() <= self.end_date
+    
+    @property
+    def lessons_left(self):
+        
+        completed_lessons = self.student.lesson_logs.filter(
+            date__range=[self.start_date, self.end_date]
+        ).count()
+
+        return self.planned_lessons - completed_lessons
+    
+    @property
+    def full_cost(self):
+        return self.planned_lessons * self.price

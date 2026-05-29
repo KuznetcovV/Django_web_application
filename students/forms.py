@@ -39,7 +39,7 @@ class StudentForm(ModelForm):
 class SubscriptionForm(ModelForm):
     class Meta:
         model = Subscription
-        exclude = ['student']
+        exclude = ['student', 'planned_lessons']
         widgets = {
             'start_date': forms.DateInput(attrs={
                 'class': 'form-control',
