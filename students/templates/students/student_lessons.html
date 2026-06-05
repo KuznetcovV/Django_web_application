@@ -97,4 +97,15 @@
 
 {% endif %}
 
+    <div class="mt-3 d-flex justify-content-end">
+
+        <a href="{% url 'add_lesson_for_student' student.id %}"
+        class="btn btn-sm btn-primary">
+
+            Добавить занятие
+
+        </a>
+
+    </div>
+
 {% endblock %}

@@ -36,7 +36,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
 
             <h4 class="mb-0">
-                Расписание
+                Ближайшее занятие
             </h4>
 
             <a href="{% url 'student_lessons' student.id %}"
@@ -48,29 +48,25 @@
 
         </div>
 
-        {% if lessons %}
+        {% if nearest_lesson %}
 
-            {% for lesson in lessons %}
+            <div class="card mb-2 bg-light border-0">
 
-                <div class="card mb-2 bg-light border-0">
+                <div class="card-body d-flex justify-content-between align-items-center">
 
-                    <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
 
-                        <div>
+                        <span class="badge bg-primary">
 
-                            <span class="badge bg-primary">
+                            {{ nearest_lesson.time_start|time:"H:i" }}
+                            —
+                            {{ nearest_lesson.time_end|time:"H:i" }}
 
-                                {{ lesson.time_start|time:"H:i" }}
-                                —
-                                {{ lesson.time_end|time:"H:i" }}
+                        </span>
 
-                            </span>
+                        <div class="text-muted mt-1">
 
-                            <div class="text-muted mt-1">
-
-                                {{ lesson.get_day_display }}
-
-                            </div>
+                            {{ nearest_lesson.get_day_display }}
 
                         </div>
 
@@ -78,7 +74,7 @@
 
                 </div>
 
-            {% endfor %}
+            </div>
 
         {% else %}
 

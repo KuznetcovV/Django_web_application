@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Student, Subscription
 from lessons.models import Lesson
 from .forms import StudentForm, SubscriptionForm
-from datetime import timedelta, date
+from datetime import timedelta, datetime, date
 
 
 @login_required
@@ -14,19 +14,7 @@ def students_tab(request):
     }
     return render(request, 'students/students.html', context)
 
-
-def count_of_weekdays_between_dates(weekdays, start, end):
-    count = 0
-    current_date = start
-
-    while current_date <= end:
-        if current_date.weekday() + 1 in weekdays:
-            count += 1
-        
-        current_date += timedelta(days=1)
-    
-    return count
-
+@login_required
 def create_subscription(requset, student_id):
 
     student = get_object_or_404(Student, id=student_id)
@@ -57,7 +45,7 @@ def create_subscription(requset, student_id):
 
     return render(requset, 'students/create_subscription.html', context)
 
-
+@login_required
 def edit_subscription(request, subscription_id):
     subscription = get_object_or_404(Subscription, id=subscription_id)
     student_id = subscription.student.id
@@ -78,7 +66,7 @@ def edit_subscription(request, subscription_id):
 
     return render(request, 'students/edit_subscription.html', context)
 
-
+@login_required
 def delete_subscription(request, subscription_id):
     subscription = get_object_or_404(Subscription, id=subscription_id)
     student_id = subscription.student.id
@@ -135,9 +123,11 @@ def delete_student(request, student_id):
     return redirect('students')
 
 
-
 @login_required
 def student_info(request, student_id):
+
+    now_date = datetime.now().date()
+    now_time = datetime.now().time()
 
     student = get_object_or_404(
         Student.objects.prefetch_related(
@@ -160,6 +150,10 @@ def student_info(request, student_id):
         'subscription': subscription,
         'lesson_logs': lesson_logs
     }
+
+    if lessons:
+        nearest_lesson = min(lessons, key=lambda l: (get_next_weekday(l.day - 1), l.time_start))
+        context['nearest_lesson'] = nearest_lesson
 
     return render(request, 'students/student_info.html', context)
 
@@ -214,6 +208,7 @@ def student_lessons(request, student_id):
 
 
 def student_subscriptions(request, student_id):
+    
     student = get_object_or_404(Student, id=student_id)
 
     subscriptions = student.subscriptions.order_by('-end_date')
@@ -224,3 +219,25 @@ def student_subscriptions(request, student_id):
     }
 
     return render(request, 'students/student_subscriptions.html', context)
+
+def count_of_weekdays_between_dates(weekdays, start, end):
+
+    count = 0
+    current_date = start
+
+    while current_date <= end:
+        if current_date.weekday() + 1 in weekdays:
+            count += 1
+        
+        current_date += timedelta(days=1)
+    
+    return count
+
+def get_next_weekday(target_weekday):
+    today = date.today()
+    today_weekday = today.weekday()
+
+    days_until = (target_weekday - today_weekday) % 7
+
+    return today + timedelta(days=days_until)
+    
