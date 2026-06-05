@@ -43,11 +43,13 @@ def create_lesson_for_student(request, student_id):
 def edit_lesson(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
 
+    student_id = lesson.student.id
+
     if request.method == 'POST':
         form = LessonForm(request.POST, instance=lesson)
         if form.is_valid():
             form.save()
-            return redirect('lessons')
+            return redirect('student_lessons', student_id=student_id)
     else:
         form = LessonForm(instance=lesson)
 
@@ -60,10 +62,12 @@ def edit_lesson(request, lesson_id):
 def delete_lesson(request, lesson_id):
     lesson = get_object_or_404(Lesson, id=lesson_id)
 
+    student_id = lesson.student.id
+
     if request.method == 'POST':
         lesson.delete()
 
-    return redirect('lessons')
+    return redirect('student_lessons', student_id=student_id)
 
 
 @login_required
@@ -80,6 +84,7 @@ def base_schedule_tab(request):
     return render(request, 'lessons/base_schedule.html', context)
 
 
+@login_required
 def actual_schedule_view(request):
     today = date.today()
     start_week = today - timedelta(days=today.weekday())
@@ -185,6 +190,7 @@ def calculate_free_intervals(date):
     
     return intervals_for_this_day
 
+@login_required
 @require_POST
 def cancel_lesson(request):
     lesson_id = request.POST.get('lesson_id')
@@ -209,6 +215,7 @@ def cancel_lesson(request):
     return redirect('actual_schedule')
 
 
+@login_required
 @require_POST
 def transfer_lesson(request):
     lesson_id = request.POST.get('lesson_id')
@@ -244,7 +251,7 @@ def transfer_lesson(request):
 
     return redirect('actual_schedule')
 
-
+@login_required
 def create_lesson_log(request, lesson_id, lesson_date):
 
     lesson = get_object_or_404(Lesson, id=lesson_id)

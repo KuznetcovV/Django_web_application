@@ -15,19 +15,19 @@ def students_tab(request):
     return render(request, 'students/students.html', context)
 
 @login_required
-def create_subscription(requset, student_id):
+def create_subscription(request, student_id):
 
     student = get_object_or_404(Student, id=student_id)
     lessons = student.lessons.all()
     weekdays = set(lessons.values_list('day', flat=True))
 
-    if requset.method == 'POST':
-        form = SubscriptionForm(requset.POST)
+    if request.method == 'POST':
+        form = SubscriptionForm(request.POST)
     else:
         form = SubscriptionForm()
     
     
-    if requset.method == 'POST' and form.is_valid():
+    if request.method == 'POST' and form.is_valid():
         subscription = form.save(commit=False)
         subscription.student = student
         subscription.planned_lessons = count_of_weekdays_between_dates(
@@ -43,7 +43,7 @@ def create_subscription(requset, student_id):
         'student': student
     }
 
-    return render(requset, 'students/create_subscription.html', context)
+    return render(request, 'students/create_subscription.html', context)
 
 @login_required
 def edit_subscription(request, subscription_id):
@@ -172,7 +172,7 @@ def count_lessons_for_student_in_period(start_date, end_date, student_id):
     return counter_of_lessons_in_period
 
 
-def count_price_sibscription(student_id):
+def count_price_subscription(student_id):
     subsctiption_for_student = Subscription.objects.filter(student=student_id).order_by('-start_date').first()
     start_date = subsctiption_for_student.start_date
     end_date = subsctiption_for_student.end_date
@@ -181,6 +181,7 @@ def count_price_sibscription(student_id):
     return int(price_for_one_lesson * amount_of_lessons)
 
 
+@login_required
 def student_logs(request, student_id):
     student = get_object_or_404(Student, id=student_id)
 
@@ -194,6 +195,7 @@ def student_logs(request, student_id):
     return render(request, 'students/student_logs.html', context)
 
 
+@login_required
 def student_lessons(request, student_id):
     student = get_object_or_404(Student, id=student_id)
 
@@ -207,6 +209,7 @@ def student_lessons(request, student_id):
     return render(request, 'students/student_lessons.html', context)
 
 
+@login_required
 def student_subscriptions(request, student_id):
     
     student = get_object_or_404(Student, id=student_id)
